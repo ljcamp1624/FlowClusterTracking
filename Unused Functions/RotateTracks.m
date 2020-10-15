@@ -1,0 +1,10 @@
+function tracksOut = RotateTracks(tracksIn, thetaInRadians, origSize, newSize)
+oldCM = origSize([1, 2])/2;
+newCM = newSize([1, 2])/2;
+oldX = tracksIn(:, 1) - oldCM(1);
+oldY = tracksIn(:, 2) - oldCM(2);
+newX = newCM(1) + cos(2*pi - thetaInRadians)*oldX - sin(2*pi - thetaInRadians)*oldY;
+newY = newCM(2) + sin(2*pi - thetaInRadians)*oldX + cos(2*pi - thetaInRadians)*oldY;
+tracksOut = tracksIn;
+tracksOut(:, 1) = newX;
+tracksOut(:, 2) = newY;
