@@ -40,8 +40,8 @@ clc;
 
 %   File names and folders
 fileName = 'SyntheticGaussians.tif';
-importFolder = 'C:\Users\Lenny\Documents\GitHub\OpticalFlowAnalysis\Synthetic Gaussians\';
-exportFolder = 'C:\Users\Lenny\Documents\GitHub\OpticalFlowAnalysis\Synthetic Gaussians\Output\';
+importFolder = 'C:\Users\Lenny\Documents\GitHub\FlowClusterTracking\Synthetic Gaussians\';
+exportFolder = 'C:\Users\Lenny\Documents\GitHub\FlowClusterTracking\Synthetic Gaussians\Output\';
 
 %   Image Parameters
 pxUnit = 'Micron';
@@ -65,6 +65,7 @@ diffTimeSig = 5;
 %   Tracking
 clusterRad = 7;
 relThresh = 1;
+% peakImThresh = 3; % Hard coded. Can be changed in ClusterTrack.
 peakSize = 7;
 maxDisp = 7;
 
@@ -72,6 +73,7 @@ maxDisp = 7;
 % --------- Processing Parameters --------- %
 
 %   Postprocessing
+thetaBinSize = 5;
 minTrackLength = 5;
 trackSmoothNumNNs = 1;
 
@@ -93,21 +95,30 @@ analysisParams.flowParams.timeSig = flowTimeSig;
 analysisParams.flowParams.windowSig = windowSig;
 analysisParams.smoothParams.spatialSig = smoothSpatialSig;
 analysisParams.smoothParams.timeSig = smoothTimeSig;
-analysisParams.clusterParams.relThresh = relThresh;
 analysisParams.clusterParams.timeSig = diffTimeSig;
 analysisParams.clusterParams.clusterRad = clusterRad;
+% analysisParams.clusterParams.peakImThresh = peakImThresh; % Hard coded.
+analysisParams.clusterParams.relThresh = relThresh;
 analysisParams.clusterParams.peakSize = peakSize;
 analysisParams.clusterParams.maxDisp = maxDisp;
 analysisParams.proccesingParams.minTrackLength = minTrackLength;
 analysisParams.proccesingParams.trackSmoothNumNNs = trackSmoothNumNNs;
 
 %   Set Processing Parameters
+processingParams.thetaBinSize = thetaBinSize;
 processingParams.relThresh = relThresh;
+% processingParams.clusterParams.peakImThresh = peakImThresh; % Hard coded.
 processingParams.minTrackLength = minTrackLength;
 processingParams.trackSmoothNumNNs = trackSmoothNumNNs;
 
 %%  Run Main Analysis Script
-MainAnalysisScript(fileParams, analysisParams);
+% MainAnalysisScript(fileParams, analysisParams);
 
 %%  Create Movies to Check Parameters
-MoviesScript(fileParams, processingParams);
+% MoviesScript(fileParams, processingParams);
+
+%%  Process Optical Flow
+FlowProcessingScript(fileParams, processingParams);
+
+%%  Process Flow Cluster Tracks
+% TrackProcessingScript(fileParams, processingParams);

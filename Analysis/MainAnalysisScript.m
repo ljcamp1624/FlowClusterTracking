@@ -18,7 +18,7 @@
 %
 %%  Begin function
 %
-%   This function is called by ControlScript_sample.m
+%   This function is called by ControlScript.m
 %
 function MainAnalysisScript(fileParams, analysisParams)
 %% Start MainAnalysisScript
@@ -88,5 +88,5 @@ else
 end
 
 %% End MainAnalysisScript
-fprintf('\n- - - MainAnalysisScript Complete!- - -\n\n')
+fprintf('\n- - - MainAnalysisScript Complete! - - -\n\n')
 end

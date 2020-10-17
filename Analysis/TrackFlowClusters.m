@@ -45,15 +45,15 @@ flowAlignment = vxMat.*imfilter(vxMat, gaussFilter, 'replicate') + vyMat.*imfilt
 clusterIm    = relMat.*flowAlignment; 
 clusterImMask = (relMat > relThresh) & (magMat > eps);
 clusterImPos = relMat.*flowAlignment;
-clusterImPosMask = clusterImMask & smoothDiffImage > 0;
+clusterImPosMask = clusterImMask & (smoothDiffImage > 0);
 clusterImNeg = relMat.*flowAlignment.*double(relMat > relThresh).*double(magMat > eps).*double(smoothDiffImage < 0);
-clusterImNegMask = clusterImMask & smoothDiffImage < 0;
+clusterImNegMask = clusterImMask & (smoothDiffImage < 0);
 
 %%  Find and track peaks in cluster image
-[xyt, xyt2, tracks] = ClusterTrack(clusterIm, clusterImMask, peakSize, maxDisp);
-[xytPos, xytPos2, tracksPos] = ClusterTrack(clusterImPos, clusterImPosMask, peakSize, maxDisp);
-[xytNeg, xytNeg2, tracksNeg] = ClusterTrack(clusterImNeg, clusterImNegMask, peakSize, maxDisp);
+[peakIm, xyt, xyt2, tracks] = ClusterTrack(clusterIm, clusterImMask, peakSize, maxDisp);
+[peakImPos, xytPos, xytPos2, tracksPos] = ClusterTrack(clusterImPos, clusterImPosMask, peakSize, maxDisp);
+[peakImNeg, xytNeg, xytNeg2, tracksNeg] = ClusterTrack(clusterImNeg, clusterImNegMask, peakSize, maxDisp);
 
 %% Save results
-save([exportFolder, 'FlowClusterTracks.mat'], 'xyt', 'xyt2', 'xytPos', 'xytPos2', 'xytNeg', 'xytNeg2', 'tracks', 'tracksPos', 'tracksNeg', 'flowAlignment', 'clusterIm', 'clusterImPos', 'clusterImNeg', 'peakSize', 'maxDisp', 'relThresh');
+save([exportFolder, 'FlowClusterTracks.mat'], 'peakIm', 'peakImPos', 'peakImNeg', 'xyt', 'xyt2', 'xytPos', 'xytPos2', 'xytNeg', 'xytNeg2', 'tracks', 'tracksPos', 'tracksNeg', 'flowAlignment', 'clusterIm', 'clusterImPos', 'clusterImNeg', 'peakSize', 'maxDisp', 'relThresh');
 end
