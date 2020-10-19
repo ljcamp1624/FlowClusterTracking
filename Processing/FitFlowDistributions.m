@@ -20,7 +20,7 @@
 %
 %   This function is called by FlowProcessingScript.m
 %
-function FitFlowDistributions(exportFolder, fileName, angList, timeList, relList, peakList, relThresh, peakImThresh)
+function [basicModel, mixedModel] = FitFlowDistributions(exportFolder, fileName, angList, timeList, relList, peakList, relThresh, peakImThresh)
 %%  Calculate basic von-Mises-model parameters
 
 basicModel.noMask.allTimes = AnalyticalVonMisesFit(angList);
@@ -48,6 +48,6 @@ mixedModel.peakMask.allTimes = AnalyticalVonMisesFit(angList(mask));
 mixedModel.peakMask.overTime = AnalyticalVonMisesFitOverTime(angList(mask), timeList(mask));
 
 %%  Save output
-save([exportFolder, fileName], 'basicModel', 'mixedModel', 'relThresh', 'peakThresh');
+save([exportFolder, fileName], 'basicModel', 'mixedModel', 'relThresh', 'peakImThresh');
 
 end

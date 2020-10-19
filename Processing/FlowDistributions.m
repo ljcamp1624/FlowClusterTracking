@@ -20,28 +20,32 @@
 %
 %   This function is called by FlowProcessingScript.m
 %
-function FlowDistributions(folder, importFileName, exportFileName, relThresh, peakImThresh, thetaBinSize)
-%%  Load flow data
-load([folder, importFileName], 'angList', 'relList', 'peakList');
-
+function [allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts] = FlowDistributions(exportFolder, fileName, angList, timeList, relList, peakList, relThresh, peakImThresh, thetaBinSize)
 %%  Calculate flow distributions
 
 %   Modify angList for thetaBinSize
 angListMod = mod(angList*180/pi + thetaBinSize/2, 360) - thetaBinSize/2;
 
-%   Calculate full histogram
-allAngCounts = histcounts(angListMod, (0:thetaBinSize:360) - thetaBinSize/2);
-
 %   Calculate masks
 relMask = relList > relThresh;
 peakMask = peakList > peakImThresh;
 
-%   Calculate masked histograms
-relMaskAngCounts = histcounts(angListMod(relMask), (0:thetaBinSize:360) - thetaBinSize/2);
-peakMaskAngCounts = histcounts(angListMod(peakMask), (0:thetaBinSize:360) - thetaBinSize/2);
-relAndPeakMaskAngCounts = histcounts(angListMod(relMask & peakMask), (0:thetaBinSize:360) - thetaBinSize/2);
+%   Calculate distribution counts
+bins = (0:thetaBinSize:360) - thetaBinSize/2;
+timeArray = unique(timeList);
+allAngCounts = [];
+relMaskAngCounts = [];
+peakMaskAngCounts = [];
+relAndPeakMaskAngCounts = [];
+for tIdx = 1:length(timeArray)
+    timeMask = timeList == timeArray(tIdx);
+    allAngCounts = [allAngCounts; histcounts(angListMod(timeMask), bins)];
+    relMaskAngCounts = [relMaskAngCounts; histcounts(angListMod(timeMask & relMask), bins)];
+    peakMaskAngCounts = [peakMaskAngCounts; histcounts(angListMod(timeMask & peakMask), bins)];
+    relAndPeakMaskAngCounts = [relAndPeakMaskAngCounts; histcounts(angListMod(timeMask & relMask & peakMask), bins)];
+end
 
 %%  Save flow distributions
-save([folder, exportFileName], 'allAngCounts', 'relMaskAngCounts', 'peakMaskAngCounts', 'relAndPeakMaskAngCounts');
+save([exportFolder, fileName], 'allAngCounts', 'relMaskAngCounts', 'peakMaskAngCounts', 'relAndPeakMaskAngCounts', 'thetaBinSize');
 
 end

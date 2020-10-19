@@ -32,9 +32,9 @@ if ~exist(flowExportFolder, 'dir')
 end
 
 %%  Process file names
-fileName1 = [flowExportFolder, 'FlowDistributionsData.mat'];
-fileName2 = [flowExportFolder, 'PosFlowDistributionsData.mat'];
-fileName3 = [flowExportFolder, 'NegFlowDistributionsData.mat'];
+fileName1 = 'FlowDistributionsData.mat';
+fileName2 = 'PosFlowDistributionsData.mat';
+fileName3 = 'NegFlowDistributionsData.mat';
 
 %%  Process parameters
 relThresh = processingParams.relThresh;
@@ -42,7 +42,7 @@ peakImThresh = 3; % Hard coded.
 thetaBinSize = processingParams.thetaBinSize;
 
 %%  Load optical flow
-if exist(fileName1, 'file') || exist(fileName2, 'file') || exist(fileName3, 'file')
+if exist([flowExportFolder, fileName1], 'file') || exist([flowExportFolder, fileName2], 'file') || exist([flowExportFolder, fileName3], 'file')
     fprintf('- Optical Flow Distributions Data Located\n');
 else
     fprintf('- Loading Optical Flow to Create Distributions Data\n');
@@ -56,88 +56,196 @@ end
 %%  Calculate optical flow distributions data
 
 %   All data
-if exist(fileName1, 'file')
+if exist([flowExportFolder, fileName1], 'file')
     fprintf('- FlowDistributionsData Located\n');
 else
     fprintf('- Creating Distributions Data\n');
-    [angList, timeList, relList, peakList] = FlowDistributionsData(flowExportFolder, 'FlowDistributionsData', vxMat, vyMat, relMat, smoothDiffImages, peakIm, clusterIm);
+    [angList, timeList, relList, peakList] = FlowDistributionsData(flowExportFolder, fileName1(1:(end - 4)), vxMat, vyMat, relMat, smoothDiffImages, peakIm, clusterIm);
 end
 
 %   Positive data
-if exist(fileName2, 'file')
+if exist([flowExportFolder, fileName2], 'file')
     fprintf('- PosFlowDistributionsData Located\n');
 else
     fprintf('- Creating Positive Distributions Data\n');
-    [posAngList, posTimeList, posRelList, posPeakList] = FlowDistributionsData(flowExportFolder, 'PosFlowDistributionsData', vxMat, vyMat, relMat, smoothDiffImages, peakImPos, clusterImPos);
+    [posAngList, posTimeList, posRelList, posPeakList] = FlowDistributionsData(flowExportFolder, fileName2(1:(end - 4)), vxMat, vyMat, relMat, smoothDiffImages, peakImPos, clusterImPos);
 end
 
 %   Negative data
-if exist(fileName3, 'file')
+if exist([flowExportFolder, fileName3], 'file')
     fprintf('- NegFlowDistributionsData Located\n');
 else
     fprintf('- Creating Negative Distributions Data\n');
-    [negAngList, negTimeList, negRelList, negPeakList] = FlowDistributionsData(flowExportFolder, 'NegFlowDistributionsData', vxMat, vyMat, relMat, smoothDiffImages, peakImNeg, clusterImNeg);
+    [negAngList, negTimeList, negRelList, negPeakList] = FlowDistributionsData(flowExportFolder, fileName3(1:(end - 4)), vxMat, vyMat, relMat, smoothDiffImages, peakImNeg, clusterImNeg);
+end
+
+%%  Calculate optical flow distributions
+
+%   Process file names
+fileName4 = 'FlowDistributions.mat';
+fileName5 = 'PosFlowDistributions.mat';
+fileName6 = 'NegFlowDistributions.mat';
+
+%   All data
+if exist([flowExportFolder, fileName4], 'file')
+    fprintf('- FlowDistributions Located\n');
+    oldThetaBinSize = load([flowExportFolder, fileName4], 'thetaBinSize');
+    oldThetaBinSize = oldThetaBinSize.thetaBinSize;
+else
+    oldThetaBinSize = 360;
+end
+if oldThetaBinSize ~= thetaBinSize
+    if ~exist('angList', 'var')
+        fprintf('- Loading FlowDistributionsData to Create Flow Distributions\n');
+        load([flowExportFolder, fileName1], 'angList', 'timeList', 'relList', 'peakList');
+    end
+    fprintf('- Creating FlowDistributionsData with current parameters\n');
+    [allAllAngCounts, allRelMaskAngCounts, allPeakMaskAngCounts, allRelAndPeakMaskAngCounts] = FlowDistributions(flowExportFolder, fileName4(1:(end - 4)), angList, timeList, relList, peakList, relThresh, peakImThresh, thetaBinSize);
+end
+
+%   Positive data
+if exist([flowExportFolder, fileName5], 'file')
+    fprintf('- PosFlowDistributions Located\n');
+    oldThetaBinSize = load([flowExportFolder, fileName5], 'thetaBinSize');
+    oldThetaBinSize = oldThetaBinSize.thetaBinSize;
+else
+    oldThetaBinSize = 360;
+end
+if oldThetaBinSize ~= thetaBinSize
+    if ~exist('posAngList', 'var')
+        fprintf('- Loading PosFlowDistributionsData to Create Positive Flow Distributions\n');
+        posData = load([flowExportFolder, fileName2], 'angList', 'timeList', 'relList', 'peakList');
+        posAngList = posData.angList;
+        posTimeList = posData.timeList;
+        posRelList = posData.relList;
+        posPeakList = posData.peakList;
+    end
+    fprintf('- Creating PosFlowDistributionsData with current parameters\n');
+    [posAllAngCounts, posRelMaskAngCounts, posPeakMaskAngCounts, posRelAndPeakMaskAngCounts] = FlowDistributions(flowExportFolder, fileName5(1:(end - 4)), posAngList, posTimeList, posRelList, posPeakList, relThresh, peakImThresh, thetaBinSize);
+end
+
+%   Negative data
+if exist([flowExportFolder, fileName6], 'file')
+    fprintf('- NegFlowDistributions Located\n');
+    oldThetaBinSize = load([flowExportFolder, fileName6], 'thetaBinSize');
+    oldThetaBinSize = oldThetaBinSize.thetaBinSize;
+else
+    oldThetaBinSize = 360;
+end
+if oldThetaBinSize ~= thetaBinSize
+    if ~exist('negAngList', 'var')
+        fprintf('- Loading NegFlowDistributionsData to Create Positive Flow Distributions\n');
+        negData = load([flowExportFolder, fileName3], 'angList', 'timeList', 'relList', 'peakList');
+        negAngList = negData.angList;
+        negTimeList = negData.timeList;
+        negRelList = negData.relList;
+        negPeakList = negData.peakList;
+    end
+    fprintf('- Creating NegFlowDistributionsData with current parameters\n');
+    [negAllAngCounts, negRelMaskAngCounts, negPeakMaskAngCounts, negRelAndPeakMaskAngCounts] = FlowDistributions(flowExportFolder, fileName6(1:(end - 4)), negAngList, negTimeList, negRelList, negPeakList, relThresh, peakImThresh, thetaBinSize);
 end
 
 %%  Fit optical flow distributions to model
 
 %   Process file names
-fileName4 = [flowExportFolder, 'FlowModels.mat'];
-fileName5 = [flowExportFolder, 'PosFlowModels.mat'];
-fileName6 = [flowExportFolder, 'NegFlowModels.mat'];
+fileName7 = 'FlowModels.mat';
+fileName8 = 'PosFlowModels.mat';
+fileName9 = 'NegFlowModels.mat';
 
 %   All data
-if exist(fileName4, 'file')
+if exist([flowExportFolder, fileName7], 'file')
     fprintf('- FlowModels Located\n');
 else
     if ~exist('angList', 'var')
-        fprintf('- Load FlowDistributionsData to Create Flow Models\n');
-        load(fileName1, 'angList', 'timeList', 'relList', 'peakList');
+        fprintf('- Loading FlowDistributionsData to Create Flow Models\n');
+        load([flowExportFolder, fileName1], 'angList', 'timeList', 'relList', 'peakList');
     end
     fprintf('- Creating FlowModels\n');
-    FitFlowDistributions(flowExportFolder, 'FlowModels', angList, timeList, relList, peakList, relThresh, peakImThresh);
+    [allBasicModel, allMixedModel] = FitFlowDistributions(flowExportFolder, fileName7(1:(end - 4)), angList, timeList, relList, peakList, relThresh, peakImThresh);
 end
 
 %   Positive data
-if exist(fileName5, 'file')
+if exist([flowExportFolder, fileName8], 'file')
     fprintf('- PosFlowModels Located\n');
 else
     if ~exist('posAngList', 'var')
-        fprintf('- Load PosFlowDistributionsData to Create Positive Flow Models\n');
-        posData = load(fileName2, 'angList', 'timeList', 'relList', 'peakList');
+        fprintf('- Loading PosFlowDistributionsData to Create Positive Flow Models\n');
+        posData = load([flowExportFolder, fileName2], 'angList', 'timeList', 'relList', 'peakList');
         posAngList = posData.angList;
         posTimeList = posData.timeList;
         posRelList = posData.relList;
         posPeakList = posData.peakList;
     end
     fprintf('- Creating Positive Flow Models\n');
-    FitFlowDistributions(flowExportFolder, 'PosFlowModels', posAngList, posTimeList, posRelList, posPeakList, relThresh, peakImThresh);
+    [posBasicModel, posMixedModel] = FitFlowDistributions(flowExportFolder, fileName8(1:(end - 4)), posAngList, posTimeList, posRelList, posPeakList, relThresh, peakImThresh);
 end
 
 %   Negative data
-if exist(fileName6, 'file')
+if exist([flowExportFolder, fileName9], 'file')
     fprintf('- NegFlowModels Located\n');
 else
     if ~exist('negAngList', 'var')
-        fprintf('- Load NegFlowDistributionsData to Create Positive Flow Models\n');
-        negData = load(fileName3, 'angList', 'timeList', 'relList', 'peakList');
+        fprintf('- Loading NegFlowDistributionsData to Create Negative Flow Models\n');
+        negData = load([flowExportFolder, fileName3], 'angList', 'timeList', 'relList', 'peakList');
         negAngList = negData.angList;
         negTimeList = negData.timeList;
         negRelList = negData.relList;
         negPeakList = negData.peakList;
     end
     fprintf('- Creating Negative Flow Models\n');
-    FitFlowDistributions(flowExportFolder, 'NegFlowModels', negAngList, negTimeList, negRelList, negPeakList, relThresh, peakImThresh);
+    [negBasicModel, negMixedModel] = FitFlowDistributions(flowExportFolder, fileName9(1:(end - 4)), negAngList, negTimeList, negRelList, negPeakList, relThresh, peakImThresh);
 end
 
-%%  Calculate and plot optical flow distributions
-FlowDistributions(flowExportFolder, 'FlowDistributionsData', 'FlowDistributionsCounts', relThresh, peakImThresh, thetaBinSize);
-FlowDistributions(flowExportFolder, 'PosFlowDistributionsData', 'PosFlowDistributionsCounts', relThresh, peakImThresh, thetaBinSize);
-FlowDistributions(flowExportFolder, 'NegFlowDistributionsData', 'NegFlowDistributionsCounts', relThresh, peakImThresh, thetaBinSize);
+%%  Plot flow distributions
 
-%%  Plot optical flow distributions
+if ~exist('allAllAngCounts', 'var')
+    fprintf('- Loading FlowDistributions to Create Plots\n');
+    allCountData = load([flowExportFolder, fileName4], 'allAngCounts', 'relMaskAngCounts', 'peakMaskAngCounts', 'relAndPeakMaskAngCounts');
+    allAllAngCounts = allCountData.allAngCounts;
+    allRelMaskAngCounts = allCountData.relMaskAngCounts;
+    allPeakMaskAngCounts = allCountData.peakMaskAngCounts;
+    allRelAndPeakMaskAngCounts = allCountData.relAndPeakMaskAngCounts;
+end
+if ~exist('allBasicModel', 'var')
+    fprintf('- Loading FlowModels to Create Plots\n');
+    allData = load([flowExportFolder, fileName7], 'basicModel', 'mixedModel');
+    allBasicModel = allData.basicModel;
+    allMixedModel = allData.mixedModel;
+end
+PlotFlowDistributions(flowExportFolder, fileName4(1:(end - 4)), allAllAngCounts, allRelMaskAngCounts, allPeakMaskAngCounts, thetaBinSize, allBasicModel, allMixedModel);
 
-%%  
+if ~exist('posAllAngCounts', 'var')
+    fprintf('- Loading PosFlowDistributions to Create Plots\n');
+    posCountData = load([flowExportFolder, fileName5], 'allAngCounts', 'relMaskAngCounts', 'peakMaskAngCounts', 'relAndPeakMaskAngCounts');
+    posAllAngCounts = posCountData.allAngCounts;
+    posRelMaskAngCounts = posCountData.relMaskAngCounts;
+    posPeakMaskAngCounts = posCountData.peakMaskAngCounts;
+    posRelAndPeakMaskAngCounts = posCountData.relAndPeakMaskAngCounts;
+end
+if ~exist('posBasicModel', 'var')
+    fprintf('- Loading PosFlowModels to Create Plots\n');
+    posData = load([flowExportFolder, fileName8], 'basicModel', 'mixedModel');
+    posBasicModel = posData.basicModel;
+    posMixedModel = posData.mixedModel;
+end
+PlotFlowDistributions(flowExportFolder, fileName5(1:(end - 4)), posAllAngCounts, posRelMaskAngCounts, posPeakMaskAngCounts, thetaBinSize, posBasicModel, posMixedModel);
+
+if ~exist('negAllAngCounts', 'var')
+    fprintf('- Loading NegFlowDistributions to Create Plots\n');
+    negCountData = load([flowExportFolder, fileName6], 'allAngCounts', 'relMaskAngCounts', 'peakMaskAngCounts', 'relAndPeakMaskAngCounts');
+    negAllAngCounts = negCountData.allAngCounts;
+    negRelMaskAngCounts = negCountData.relMaskAngCounts;
+    negPeakMaskAngCounts = negCountData.peakMaskAngCounts;
+    negRelAndPeakMaskAngCounts = negCountData.relAndPeakMaskAngCounts;
+end
+if ~exist('negBasicModel', 'var')
+    fprintf('- Loading NegFlowModels to Create Plots\n');
+    negData = load([flowExportFolder, fileName9], 'basicModel', 'mixedModel');
+    negBasicModel = negData.basicModel;
+    negMixedModel = negData.mixedModel;
+end
+PlotFlowDistributions(flowExportFolder, fileName6(1:(end - 4)), negAllAngCounts, negRelMaskAngCounts, negPeakMaskAngCounts, thetaBinSize, negBasicModel, negMixedModel);
+
 
 %%  End ParameterMoviesScript
 fprintf('\n- - - FlowProcessingScript Complete! - - -\n\n')
