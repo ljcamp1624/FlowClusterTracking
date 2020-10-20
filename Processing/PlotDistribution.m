@@ -24,4 +24,5 @@ if ~isempty(varargin)
     hold off;
 end
 drawnow;
+title(fileName, 'Interpreter', 'none');
 print([folderName, fileName], '-dpng', '-r150');

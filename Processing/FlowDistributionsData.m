@@ -28,7 +28,7 @@ magMat = sqrt(vxMat.*vxMat + vyMat.*vyMat);
 
 %%  Flow data where magnitude is > 0
 magMask = magMat > eps;
-angList = angMat(magMask(:));
+angList = angMat(magMask(:)) - pi/2;
 magList = magMat(magMask(:));
 timeList = timeMat(magMask(:));
 relList = relMat(magMask(:));

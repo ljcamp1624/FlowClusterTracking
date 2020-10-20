@@ -25,21 +25,23 @@ function newFitParams = LikelihoodVonMisesFit(angList, fitParams)
 %%  choose initial parameters
 b = fitParams(:); % Should be in the form  b = [mu; k; p1; p2; p3];
 
-%   These lines assume that fitParams are initialized by 
-%   AnalyticalVonMisesFit*.m to "invert" the normalization to prepare for 
+%   These lines assume that fitParams are initialized by
+%   AnalyticalVonMisesFit*.m to "invert" the normalization to prepare for
 %   maximum likelihood fitting.
 z1 = fitParams(3);
 z2 = fitParams(4);
-x1 = log(z1./z2)./(1 - log(1 - z1) + log(z1));
-x2 = x1 - log(z1./z2);
-fitParams(3) = x1;
-fitParams(4) = x2;
-fitParams(5) = -inf;
+x1 = log(min(1, max(0.01, z1)));
+x2 = log(min(1, max(0.01, z2)));
+newFitParams(1) = fitParams(1);
+newFitParams(2) = fitParams(2);
+newFitParams(3) = x1;
+newFitParams(4) = x2;
+newFitParams(5) = min(x1, x2) + log(.01);
 
 %%  fit data
-options = optimoptions('fmincon', 'GradObj', 'on');
+options = optimoptions('fmincon', 'GradObj', 'on', 'display', 'none');
 lowerBound = [-inf; 2; -inf; -inf; -inf];
-newFitParams = fmincon(@(b) VMMix_logF(angList, b), fitParams, [], [], [], [], lowerBound, [], options);
+newFitParams = fmincon(@(b) VMMix_logF(angList, b), newFitParams, [], [], [], [], lowerBound, [], [], options);
 
 %%  process output
 z = sum(exp(newFitParams(3:5)));

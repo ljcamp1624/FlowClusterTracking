@@ -23,8 +23,7 @@
 %   quantify the flow on an intermediate mesoscale. This code utilizes
 %   Lucas-Kanade Optical Flow and Crocker-Grier Particle Tracking.
 %
-%   The sample here uses representative fluorescence movies of actin in an
-%   HL60 cell undergoing cytoskeletal rearrangements during migration.
+%   The sample here uses dynamic synthetic gaussians.
 %
 %%  Begin script
 clear all;
@@ -34,6 +33,14 @@ clc;
 %%  Define parameters
 %
 %   Refer to README.txt for a full explanation of all parameters.
+
+
+% --------- Control Script Parameters --------- %
+
+run(1) = 1;     % MainAnalysisScript:       1 = run
+run(2) = 0;     % MoviesScript              1 = run
+run(3) = 2;     % FlowProcessingScript      1 = run, 2 = run with plotting
+run(4) = 1;     % TrackProcessingScript     1 = run, 2 = run with plotting
 
 
 % --------- File Parameters --------- %
@@ -112,13 +119,25 @@ processingParams.minTrackLength = minTrackLength;
 processingParams.trackSmoothNumNNs = trackSmoothNumNNs;
 
 %%  Run Main Analysis Script
-% MainAnalysisScript(fileParams, analysisParams);
+if run(1) == 1
+    MainAnalysisScript(fileParams, analysisParams);
+end
 
 %%  Create Movies to Check Parameters
-% MoviesScript(fileParams, processingParams);
+if run(2) == 1
+    MoviesScript(fileParams, processingParams);
+end
 
 %%  Process Optical Flow
-FlowProcessingScript(fileParams, processingParams);
+if run(3) == 1
+    FlowProcessingScript(fileParams, processingParams, 0);
+elseif run(3) == 2
+    FlowProcessingScript(fileParams, processingParams, 1);
+end
 
 %%  Process Flow Cluster Tracks
-% TrackProcessingScript(fileParams, processingParams);
+if run(4) == 1
+    TrackProcessingScript(fileParams, processingParams, 0);
+elseif run(4) == 2
+    TrackProcessingScript(fileParams, processingParams, 1);
+end

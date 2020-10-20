@@ -34,18 +34,26 @@ mask = peakList > peakImThresh;
 basicModel.peakMask.allTimes = AnalyticalVonMisesFit(angList(mask));
 basicModel.peakMask.overTime = AnalyticalVonMisesFitOverTime(angList(mask), timeList(mask));
 
+mask = (relList > relThresh) & (peakList > peakImThresh);
+basicModel.relAndPeakMask.allTimes = AnalyticalVonMisesFit(angList(mask));
+basicModel.relAndPeakMask.overTime = AnalyticalVonMisesFitOverTime(angList(mask), timeList(mask));
+
 %%  Fit distribution to von-Mises-model-plus-constant model
 
-mixedModel.noMask.allTimes = AnalyticalVonMisesFit(angList);
-mixedModel.noMask.overTime = AnalyticalVonMisesFitOverTime(angList, timeList);
+mixedModel.noMask.allTimes = LikelihoodVonMisesFit(angList, basicModel.noMask.allTimes);
+mixedModel.noMask.overTime = LikelihoodVonMisesFitOverTime(angList, timeList, basicModel.noMask.overTime);
 
 mask = relList > relThresh;
-mixedModel.relMask.allTimes = AnalyticalVonMisesFit(angList(mask));
-mixedModel.relMask.overTime = AnalyticalVonMisesFitOverTime(angList(mask), timeList(mask));
+mixedModel.relMask.allTimes = LikelihoodVonMisesFit(angList(mask), basicModel.relMask.allTimes);
+mixedModel.relMask.overTime = LikelihoodVonMisesFitOverTime(angList(mask), timeList(mask), basicModel.relMask.overTime);
 
 mask = peakList > peakImThresh;
-mixedModel.peakMask.allTimes = AnalyticalVonMisesFit(angList(mask));
-mixedModel.peakMask.overTime = AnalyticalVonMisesFitOverTime(angList(mask), timeList(mask));
+mixedModel.peakMask.allTimes = LikelihoodVonMisesFit(angList(mask), basicModel.peakMask.allTimes);
+mixedModel.peakMask.overTime = LikelihoodVonMisesFitOverTime(angList(mask), timeList(mask), basicModel.peakMask.overTime);
+
+mask = (relList > relThresh) & (peakList > peakImThresh);
+mixedModel.relAndPeakMask.allTimes = LikelihoodVonMisesFit(angList(mask), basicModel.relAndPeakMask.allTimes);
+mixedModel.relAndPeakMask.overTime = LikelihoodVonMisesFitOverTime(angList(mask), timeList(mask), basicModel.relAndPeakMask.overTime);
 
 %%  Save output
 save([exportFolder, fileName], 'basicModel', 'mixedModel', 'relThresh', 'peakImThresh');

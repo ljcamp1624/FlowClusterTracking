@@ -22,11 +22,11 @@ close all;
 clc;
 
 %%  Define parameters
-steps = 80;
+steps = 25;
 xy1_init = [0, 40];
-xy2_init = [40, 40];
 xy1_final = [0, 0];
-xy2_final = [120, 40];
+xy2_init = [5, 35];
+xy2_final = [10, 80];
 sig = 10;
 
 %%  Create grid

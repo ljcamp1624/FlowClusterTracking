@@ -1,4 +1,4 @@
-function PlotFlowDistributions(folderName, fileName, angCounts, relMaskCounts, peakMaskCounts, thetaBinSize, basicModel, mixedModel)
+function PlotFlowDistributions(folderName, fileName, angCounts, relMaskCounts, peakMaskCounts, relAndPeakMaskCounts, thetaBinSize, basicModel, mixedModel)
 
 PlotDistribution(folderName, [fileName, '_allAngles'], sum(angCounts, 1), thetaBinSize);
 PlotDistribution(folderName, [fileName, '_allAngles_basicModel'], sum(angCounts, 1), thetaBinSize, basicModel.noMask.allTimes);
@@ -20,3 +20,14 @@ PlotDistribution(folderName, [fileName, '_peakMaskAngles_mixedModel'], sum(peakM
 PlotDistributionOverTime(folderName, [fileName, '_peakMaskAngles_overTime'], peakMaskCounts, thetaBinSize);
 PlotDistributionOverTime(folderName, [fileName, '_peakMaskAngles_basicModel_overTime'], peakMaskCounts, thetaBinSize, basicModel.peakMask.overTime);
 PlotDistributionOverTime(folderName, [fileName, '_peakMaskAngles_mixedModel_overTime'], peakMaskCounts, thetaBinSize, mixedModel.peakMask.overTime);
+
+PlotDistribution(folderName, [fileName, '_relAndPeakMaskAngles'], sum(relAndPeakMaskCounts, 1), thetaBinSize);
+PlotDistribution(folderName, [fileName, '_relAndPeakMaskAngles_basicModel'], sum(relAndPeakMaskCounts, 1), thetaBinSize, basicModel.relAndPeakMask.allTimes);
+PlotDistribution(folderName, [fileName, '_relAndPeakMaskAngles_mixedModel'], sum(relAndPeakMaskCounts, 1), thetaBinSize, mixedModel.relAndPeakMask.allTimes);
+PlotDistributionOverTime(folderName, [fileName, '_relAndPeakMaskAngles_overTime'], relAndPeakMaskCounts, thetaBinSize);
+PlotDistributionOverTime(folderName, [fileName, '_relAndPeakMaskAngles_basicModel_overTime'], relAndPeakMaskCounts, thetaBinSize, basicModel.relAndPeakMask.overTime);
+PlotDistributionOverTime(folderName, [fileName, '_relAndPeakMaskAngles_mixedModel_overTime'], relAndPeakMaskCounts, thetaBinSize, mixedModel.relAndPeakMask.overTime);
+
+close all;
+
+end

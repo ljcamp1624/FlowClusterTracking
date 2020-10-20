@@ -45,8 +45,8 @@ else
 end
 
 %% Smooth Original Images
-if exist([fileParams.exportFolder, 'SmoothedImages.mat'], 'file')
-    fprintf('- Smoothed Images Located\n');
+if exist([fileParams.exportFolder, 'SmoothImages.mat'], 'file')
+    fprintf('- Smooth Images Located\n');
 else
     % Load Dependencies
     fprintf('- Loading Original Images for Smoothing\n');
@@ -58,7 +58,7 @@ end
 
 %% Calculate Difference Images
 if exist([fileParams.exportFolder, 'DifferenceImages.mat'], 'file')
-    fprintf('- Difference Image Located\n');
+    fprintf('- Difference Images Located\n');
 else
     % Load dependencies
     if ~exist('originalImages', 'var')

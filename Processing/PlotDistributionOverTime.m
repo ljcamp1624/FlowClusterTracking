@@ -11,7 +11,7 @@ counts = counts/sum(counts(:))*size(counts, 1);
 
 %%  Process varargin
 if ~isempty(varargin)
-    nPoints = 72;
+    nPoints = 1000;
     xData2 = linspace(0, 2*pi, nPoints);
 end
 
@@ -33,6 +33,7 @@ for frameNum = 1:size(counts, 1)
         polarplot(xData2, yData2, 'k', 'linewidth', 1);
         hold off;
     end
+    title(fileName, 'Interpreter', 'none');
     drawnow;
     f = getframe(gcf);
     writeVideo(v, f.cdata);

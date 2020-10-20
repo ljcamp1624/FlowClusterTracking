@@ -25,9 +25,10 @@ function newFitParams = LikelihoodVonMisesFitOverTime(angList, timeList, fitPara
 timeArray = unique(timeList);
 newFitParams = [];
 for t = 1:length(timeArray)
-    currAngList = angList(timeList == timeArray(t));
-    currParams = fitParams(fitParams(:, 1) == timeArray(t), 2:6);
-    currParams = LikelihoodVonMisesFit(angListInRadians(timeList == currTime), currParams);
-    newFitParams = [newFitParams; [timeArray(t), currParams]];
+    currTime = timeArray(t);
+    currAngList = angList(timeList == currTime);
+    currParams = fitParams(fitParams(:, 1) == currTime, 2:6);
+    currParams = LikelihoodVonMisesFit(currAngList, currParams);
+    newFitParams = [newFitParams; [currTime, currParams]];
 end
 end
