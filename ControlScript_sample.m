@@ -23,8 +23,7 @@
 %   quantify the flow on an intermediate mesoscale. This code utilizes
 %   Lucas-Kanade Optical Flow and Crocker-Grier Particle Tracking.
 %
-%   The sample here uses representative fluorescence movies of actin in an
-%   HL60 cell undergoing cytoskeletal rearrangements during migration.
+%   The sample here uses dynamic synthetic gaussians.
 %
 %%  Begin script
 clear all;
@@ -36,12 +35,20 @@ clc;
 %   Refer to README.txt for a full explanation of all parameters.
 
 
+% --------- Control Script Parameters --------- %
+
+run(1) = 1;     % MainAnalysisScript:       1 = run
+run(2) = 0;     % MoviesScript              1 = run
+run(3) = 2;     % FlowProcessingScript      1 = run, 2 = run with plotting
+run(4) = 1;     % TrackProcessingScript     1 = run, 2 = run with plotting
+
+
 % --------- File Parameters --------- %
 
 %   File names and folders
 fileName = 'SyntheticGaussians.tif';
-importFolder = 'C:\Users\Lenny\Documents\GitHub\OpticalFlowAnalysis\Synthetic Gaussians\';
-exportFolder = 'C:\Users\Lenny\Documents\GitHub\OpticalFlowAnalysis\Synthetic Gaussians\Output\';
+importFolder = 'C:\Users\Lenny\Documents\GitHub\FlowClusterTracking\Synthetic Gaussians\';
+exportFolder = 'C:\Users\Lenny\Documents\GitHub\FlowClusterTracking\Synthetic Gaussians\Output\';
 
 %   Image Parameters
 pxUnit = 'Micron';
@@ -65,6 +72,7 @@ diffTimeSig = 5;
 %   Tracking
 clusterRad = 7;
 relThresh = 1;
+% peakImThresh = 3; % Hard coded. Can be changed in ClusterTrack.
 peakSize = 7;
 maxDisp = 7;
 
@@ -72,6 +80,7 @@ maxDisp = 7;
 % --------- Processing Parameters --------- %
 
 %   Postprocessing
+thetaBinSize = 5;
 minTrackLength = 5;
 trackSmoothNumNNs = 1;
 
@@ -93,21 +102,42 @@ analysisParams.flowParams.timeSig = flowTimeSig;
 analysisParams.flowParams.windowSig = windowSig;
 analysisParams.smoothParams.spatialSig = smoothSpatialSig;
 analysisParams.smoothParams.timeSig = smoothTimeSig;
-analysisParams.clusterParams.relThresh = relThresh;
 analysisParams.clusterParams.timeSig = diffTimeSig;
 analysisParams.clusterParams.clusterRad = clusterRad;
+% analysisParams.clusterParams.peakImThresh = peakImThresh; % Hard coded.
+analysisParams.clusterParams.relThresh = relThresh;
 analysisParams.clusterParams.peakSize = peakSize;
 analysisParams.clusterParams.maxDisp = maxDisp;
 analysisParams.proccesingParams.minTrackLength = minTrackLength;
 analysisParams.proccesingParams.trackSmoothNumNNs = trackSmoothNumNNs;
 
 %   Set Processing Parameters
+processingParams.thetaBinSize = thetaBinSize;
 processingParams.relThresh = relThresh;
+% processingParams.clusterParams.peakImThresh = peakImThresh; % Hard coded.
 processingParams.minTrackLength = minTrackLength;
 processingParams.trackSmoothNumNNs = trackSmoothNumNNs;
 
 %%  Run Main Analysis Script
-MainAnalysisScript(fileParams, analysisParams);
+if run(1) == 1
+    MainAnalysisScript(fileParams, analysisParams);
+end
 
 %%  Create Movies to Check Parameters
-MoviesScript(fileParams, processingParams);
+if run(2) == 1
+    MoviesScript(fileParams, processingParams);
+end
+
+%%  Process Optical Flow
+if run(3) == 1
+    FlowProcessingScript(fileParams, processingParams, 0);
+elseif run(3) == 2
+    FlowProcessingScript(fileParams, processingParams, 1);
+end
+
+%%  Process Flow Cluster Tracks
+if run(4) == 1
+    TrackProcessingScript(fileParams, processingParams, 0);
+elseif run(4) == 2
+    TrackProcessingScript(fileParams, processingParams, 1);
+end

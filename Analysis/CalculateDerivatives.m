@@ -64,3 +64,4 @@ grad_yy = imfilter(grad_y, gy2, 'replicate');
 %% Compute Gradient and Jacobian
 grad = sqrt(grad_x.^2 + grad_y.^2);
 jac = grad_xx.*grad_yy - grad_xy.*grad_yx;
+end

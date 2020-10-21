@@ -18,7 +18,7 @@
 %
 %%  Begin function
 %
-%   This function is called by ControlScript_sample.m
+%   This function is called by ControlScript.m
 %
 function MainAnalysisScript(fileParams, analysisParams)
 %% Start MainAnalysisScript
@@ -45,8 +45,8 @@ else
 end
 
 %% Smooth Original Images
-if exist([fileParams.exportFolder, 'SmoothedImages.mat'], 'file')
-    fprintf('- Smoothed Images Located\n');
+if exist([fileParams.exportFolder, 'SmoothImages.mat'], 'file')
+    fprintf('- Smooth Images Located\n');
 else
     % Load Dependencies
     fprintf('- Loading Original Images for Smoothing\n');
@@ -58,7 +58,7 @@ end
 
 %% Calculate Difference Images
 if exist([fileParams.exportFolder, 'DifferenceImages.mat'], 'file')
-    fprintf('- Difference Image Located\n');
+    fprintf('- Difference Images Located\n');
 else
     % Load dependencies
     if ~exist('originalImages', 'var')
@@ -88,5 +88,5 @@ else
 end
 
 %% End MainAnalysisScript
-fprintf('\n- - - MainAnalysisScript Complete!- - -\n\n')
+fprintf('\n- - - MainAnalysisScript Complete! - - -\n\n')
 end
