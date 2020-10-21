@@ -32,8 +32,8 @@ maxDisp = clusterParams.maxDisp;
 
 %   Set up flow images
 magMat = sqrt(vxMat.^2 + vyMat.^2);
-vxMat = vxMat./magMat;
-vyMat = vyMat./magMat;
+vxMat = vxMat./(magMat + eps);
+vyMat = vyMat./(magMat + eps);
 
 %   Calculate flow alignment
 gaussFilter = fspecial('gaussian', 2*ceil(3*clusterRad) + 1, clusterRad);
@@ -42,18 +42,21 @@ gaussFilter = gaussFilter/sum(gaussFilter(:));
 flowAlignment = vxMat.*imfilter(vxMat, gaussFilter, 'replicate') + vyMat.*imfilter(vyMat, gaussFilter, 'replicate');
 
 %   Calculate cluster images
+relMask = relMat > relThresh;
+magMask = magMat > eps;
+posMask = smoothDiffImage > 0;
+negMask = smoothDiffImage < 0;
 clusterIm    = relMat.*flowAlignment; 
-clusterImMask = (relMat > relThresh) & (magMat > eps);
-clusterImPos = relMat.*flowAlignment;
-clusterImPosMask = clusterImMask & (smoothDiffImage > 0);
-clusterImNeg = relMat.*flowAlignment.*double(relMat > relThresh).*double(magMat > eps).*double(smoothDiffImage < 0);
-clusterImNegMask = clusterImMask & (smoothDiffImage < 0);
+clusterImMask = relMask & magMask;
+clusterImPosMask = relMask & magMask & posMask;
+clusterImNegMask = relMask & magMask & negMask;
 
 %%  Find and track peaks in cluster image
-[peakIm, xyt, xyt2, tracks] = ClusterTrack(clusterIm, clusterImMask, peakSize, maxDisp);
-[peakImPos, xytPos, xytPos2, tracksPos] = ClusterTrack(clusterImPos, clusterImPosMask, peakSize, maxDisp);
-[peakImNeg, xytNeg, xytNeg2, tracksNeg] = ClusterTrack(clusterImNeg, clusterImNegMask, peakSize, maxDisp);
+peakIm = CreatePeakImage(clusterIm);
+[xyt, xyt2, tracks] = ClusterTrack(peakIm, clusterIm, clusterImMask, peakSize, maxDisp);
+[xytPos, xytPos2, tracksPos] = ClusterTrack(peakIm, clusterIm, clusterImPosMask, peakSize, maxDisp);
+[xytNeg, xytNeg2, tracksNeg] = ClusterTrack(peakIm, clusterIm, clusterImNegMask, peakSize, maxDisp);
 
 %% Save results
-save([exportFolder, 'FlowClusterTracks.mat'], 'peakIm', 'peakImPos', 'peakImNeg', 'xyt', 'xyt2', 'xytPos', 'xytPos2', 'xytNeg', 'xytNeg2', 'tracks', 'tracksPos', 'tracksNeg', 'flowAlignment', 'clusterIm', 'clusterImPos', 'clusterImNeg', 'peakSize', 'maxDisp', 'relThresh');
+save([exportFolder, 'FlowClusterTracks.mat'], 'peakIm', 'clusterIm', 'relMask', 'magMask', 'posMask', 'negMask', 'xyt', 'xyt2', 'xytPos', 'xytPos2', 'xytNeg', 'xytNeg2', 'tracks', 'tracksPos', 'tracksNeg', 'flowAlignment', 'peakSize', 'maxDisp', 'relThresh');
 end

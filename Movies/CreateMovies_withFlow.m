@@ -20,7 +20,7 @@
 %
 %   This function is called by ParameterMoviesScript.m
 %
-function CreateMovies_withFlow(exportFolder, fileName, movieCell, formatCell, vxMat, vyMat, relMat, relThresh)
+function CreateMovies_withFlow(exportFolder, fileName, movieCell, formatCell, vxMat, vyMat, magMat, magMat2, relMat, relThresh)
 %%  Parse movieCell
 movieCell = ParseMovieCell(movieCell, formatCell);
 
@@ -31,7 +31,7 @@ image = ConstructMovieCellImage(movieCell, vpadSize, hpadSize);
 
 %%  Define optical flow
 flowSpacing = 5;
-[vxMatShow, vyMatShow, relMatShow] = DeclutterQuiver(flowSpacing*vxMat, flowSpacing*vyMat, relMat, flowSpacing);
+[vxMatShow, vyMatShow, relMatShow] = DeclutterQuiver(flowSpacing*vxMat.*magMat2./magMat, flowSpacing*vyMat.*magMat2./magMat, relMat, flowSpacing);
 flowMask = relMatShow > relThresh;
 
 %%  Initialize figure

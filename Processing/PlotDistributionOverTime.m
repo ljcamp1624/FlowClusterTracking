@@ -13,6 +13,8 @@ counts = counts/sum(counts(:))*size(counts, 1);
 if ~isempty(varargin)
     nPoints = 1000;
     xData2 = linspace(0, 2*pi, nPoints);
+    timeArray = varargin{1}(:, 1);
+    modelArray = varargin{1}(:, 2:end);
 end
 
 %% Plot data
@@ -28,10 +30,12 @@ for frameNum = 1:size(counts, 1)
     polarplot(xData*pi/180, yData, 'linewidth', 2, 'Color', [2 2 2]/4);
     rlim([0 rmax]);
     if ~isempty(varargin)
-        yData2 = weightArray(frameNum)*nPoints*VMMix_f_proportions(xData2, varargin{1}(frameNum, 2:end))/(length(0:angSpacing:360) - 1);
-        hold on;
-        polarplot(xData2, yData2, 'k', 'linewidth', 1);
-        hold off;
+        if any(timeArray == frameNum)
+            yData2 = weightArray(frameNum)*nPoints*VMMix_f_proportions(xData2, modelArray(timeArray == frameNum, :))/(length(0:angSpacing:360) - 1);
+            hold on;
+            polarplot(xData2, yData2, 'k', 'linewidth', 1);
+            hold off;
+        end
     end
     title(fileName, 'Interpreter', 'none');
     drawnow;

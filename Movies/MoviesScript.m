@@ -58,10 +58,12 @@ fprintf('  Creating Optical Flow Movie\n');
 relThresh = processingParams.relThresh;
 relMask = relMat > relThresh;
 magMat = sqrt(vxMat.*vxMat + vyMat.*vyMat);
+magMat2 = magMat;
+magMat2(magMat2(:) > prctile(magMat2(:), 95)) = prctile(magMat2(:), 95);
 angMat = atan2(vyMat, vxMat);
-movieCell = {originalImages, {angMat.*relMask, magMat.*relMask}, magMat.*relMask, relMat.*relMask};
+movieCell = {originalImages, {angMat.*relMask, magMat2.*relMask}, magMat2.*relMask, relMat.*relMask};
 formatCell = {'BW', 'HSV', 'M', 'G'};
-CreateMovies_withFlow(movieExportFolder, 'Original Images and Optical Flow', movieCell, formatCell, vxMat, vyMat, relMat, relThresh);
+CreateMovies_withFlow(movieExportFolder, 'Original Images and Optical Flow', movieCell, formatCell, vxMat, vyMat, magMat, magMat2, relMat, relThresh);
 
 %%  Original and Cluster
 

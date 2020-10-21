@@ -62,7 +62,7 @@ else
     fprintf('  Loading Difference Images to Create Distributions Data\n');
     load([exportFolder, 'DifferenceImages.mat'], 'smoothDiffImages');
     fprintf('  Loading Cluster Images to Create Distributions Data\n');
-    load([exportFolder, 'FlowClusterTracks.mat'], 'peakIm', 'peakImPos', 'peakImNeg', 'clusterIm', 'clusterImPos', 'clusterImNeg');
+    load([exportFolder, 'FlowClusterTracks.mat'], 'peakIm', 'clusterIm', 'relMask', 'magMask', 'posMask', 'negMask');
     allocateData = 1;
 end
 
@@ -80,14 +80,14 @@ for runIdx = 1:3
     %%  Select data
     if allocateData == 1
         if runIdx == 1
-            currPeakIm = peakIm;
-            currClusterIm = clusterIm;
+            currPeakIm = peakIm.*double(magMask & relMask);
+            currClusterIm = clusterIm.*double(magMask & relMask);
         elseif runIdx == 2
-            currPeakIm = peakImPos;
-            currClusterIm = clusterImPos;
+            currPeakIm = peakIm.*double(magMask & relMask & posMask);
+            currClusterIm = clusterIm.*double(magMask & relMask & posMask);
         elseif runIdx == 3
-            currPeakIm = peakImNeg;
-            currClusterIm = clusterImNeg;
+            currPeakIm = peakIm.*double(magMask & relMask & negMask);
+            currClusterIm = clusterIm.*double(magMask & relMask & negMask);
         end
     end
     

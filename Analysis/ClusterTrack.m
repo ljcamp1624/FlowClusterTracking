@@ -20,10 +20,8 @@
 %
 %   This function is called by TrackFlowClusters.m
 %
-function [peakIm, xyt, xyt2, tracks] = ClusterTrack(clusterIm, mask, peakSize, maxDisp)
+function [xyt, xyt2, tracks] = ClusterTrack(peakIm, clusterIm, mask, peakSize, maxDisp)
 %%  Build image with artificial peaks
-[grad, jac] = CalculateDerivatives(clusterIm, 1);
-peakIm = clusterIm.*jac./grad;
 m = mean(peakIm(:));
 s = std(peakIm(:));
 z = (peakIm - m)/s;

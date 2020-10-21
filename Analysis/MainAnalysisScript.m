@@ -25,7 +25,7 @@ function MainAnalysisScript(fileParams, analysisParams)
 fprintf('\n- - - Starting MainAnalysisScript - - -\n\n')
 
 %%  Import Images
-if exist([fileParams.exportFolder, 'OriginalImage.mat'], 'file')
+if exist([fileParams.exportFolder, 'OriginalImages.mat'], 'file')
     fprintf('- Original Images Located\n');
 else
     fprintf('- Importing Original Images\n');
