@@ -36,7 +36,6 @@ diffTimeSig         % Temporal sigma (in frames) of the gaussian derivative used
 
 % Analysis Parameters (Tracking)
 clusterRad		% Spatial sigma (in pixels) of the gaussian weight matrix used to quantify how "similarly oriented" vectors are.
-peakThresh		% (*Crocker-Grier Tracking input) The threshold of the cluster image which is used to identify where peaks that should be tracked.
 peakSize		% (*Crocker-Grier Tracking input) The input to "pkfnd.m" to define the diameter of a tracked particle. Should be chosen carefully.
 maxDisp			% (*Crocker-Grier Tracking input) The input to "track.m" to determine the maximum displacement that a particle can travel while still being tracked.
 
