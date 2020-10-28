@@ -38,7 +38,7 @@ clc;
 % --------- Control Script Parameters --------- %
 
 run(1) = 1;     % MainAnalysisScript:       1 = run
-run(2) = 1;     % MoviesScript              1 = run
+run(2) = 0;     % MoviesScript              1 = run
 run(3) = 1;     % FlowProcessingScript      1 = run, 2 = run with plotting
 run(4) = 1;     % TrackProcessingScript     1 = run, 2 = run with plotting
 
@@ -80,10 +80,12 @@ maxDisp = 7;
 % --------- Processing Parameters --------- %
 
 %   Postprocessing
-thetaBinSize = 5;
-minTrackLength = 5;
-trackSmoothNumNNs = 1;
-
+thetaBinSizeFlow = 5;       % degrees
+minTrackLength = 5;         % frames
+trackSmoothNumNNs = 1;      % frames
+velBinSize = 10;            % (pxUnit/timeUnit)
+velMax = 150;               % (pxUnit/timeUnit)
+thetaBinSizeTracks = 15;    % degrees
 
 %%  Set parameters
 
@@ -112,11 +114,14 @@ analysisParams.proccesingParams.minTrackLength = minTrackLength;
 analysisParams.proccesingParams.trackSmoothNumNNs = trackSmoothNumNNs;
 
 %   Set Processing Parameters
-processingParams.thetaBinSize = thetaBinSize;
+processingParams.thetaBinSizeFlow = thetaBinSizeFlow;
 processingParams.relThresh = relThresh;
 % processingParams.clusterParams.peakImThresh = peakImThresh; % Hard coded.
 processingParams.minTrackLength = minTrackLength;
 processingParams.trackSmoothNumNNs = trackSmoothNumNNs;
+processingParams.velBinSize = velBinSize;
+processingParams.velMax = velMax;
+processingParams.thetaBinSizeTracks = thetaBinSizeTracks;
 
 %%  Run Main Analysis Script
 if run(1) == 1

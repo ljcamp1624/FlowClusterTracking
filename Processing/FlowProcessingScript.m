@@ -50,7 +50,7 @@ modelsFileNames = {...,
 %%  Process parameters
 relThresh = processingParams.relThresh;
 peakImThresh = 3; % Hard coded.
-thetaBinSize = processingParams.thetaBinSize;
+thetaBinSize = processingParams.thetaBinSizeFlow;
 
 %%  Load optical flow
 if exist([flowExportFolder, dataFileNames{1}], 'file') && exist([flowExportFolder, dataFileNames{2}], 'file') && exist([flowExportFolder, dataFileNames{3}], 'file')
@@ -104,7 +104,7 @@ for runIdx = 1:3
     %  Calculate flow distributions
     if exist([flowExportFolder, distributionsFileNames{runIdx}], 'file')
         fprintf('  FlowDistributions Located\n');
-        oldThetaBinSize = load([flowExportFolder, distributionsFileNames{1}], 'thetaBinSize');
+        oldThetaBinSize = load([flowExportFolder, distributionsFileNames{runIdx}], 'thetaBinSize');
         oldThetaBinSize = oldThetaBinSize.thetaBinSize;
         if oldThetaBinSize ~= thetaBinSize
             createFlowDistributions = 1;
@@ -135,7 +135,7 @@ for runIdx = 1:3
             fprintf('  Loading FlowDistributionsData to Create Flow Distributions\n');
             load([flowExportFolder, dataFileNames{runIdx}], 'angList', 'timeList', 'relList', 'peakList');
         end
-        fprintf('  Creating FlowDistributionsData with current parameters\n');
+        fprintf('  Creating FlowDistributions with current parameters\n');
         [allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts] = FlowDistributions(flowExportFolder, distributionsFileNames{runIdx}(1:(end - 4)), angList, timeList, relList, peakList, relThresh, peakImThresh, thetaBinSize);
     end
     
