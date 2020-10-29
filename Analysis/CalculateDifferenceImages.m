@@ -41,8 +41,5 @@ originalDiffImages = imfilter(originalImages, gt, 'replicate');
 smoothDiffImages = imfilter(smoothImages, gt, 'replicate');
 
 %%  Save
-try
-    save([exportFolder, 'DifferenceImages.mat'], 'originalDiffImages', 'smoothDiffImages', 'tSig');
-catch
-    save([exportFolder, 'DifferenceImages.mat'], 'originalDiffImages', 'smoothDiffImages', 'tSig', '-v7.3');
+save([exportFolder, 'DifferenceImages.mat'], 'originalDiffImages', 'smoothDiffImages', 'tSig', '-v7.3');
 end

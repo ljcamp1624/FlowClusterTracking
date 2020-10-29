@@ -58,5 +58,5 @@ peakIm = CreatePeakImage(clusterIm);
 [xytNeg, xytNeg2, tracksNeg] = ClusterTrack(peakIm, clusterIm, clusterImNegMask, peakSize, maxDisp);
 
 %% Save results
-save([exportFolder, 'FlowClusterTracks.mat'], 'peakIm', 'clusterIm', 'relMask', 'magMask', 'posMask', 'negMask', 'xyt', 'xyt2', 'xytPos', 'xytPos2', 'xytNeg', 'xytNeg2', 'tracks', 'tracksPos', 'tracksNeg', 'flowAlignment', 'peakSize', 'maxDisp', 'relThresh');
+save([exportFolder, 'FlowClusterTracks.mat'], 'peakIm', 'clusterIm', 'relMask', 'magMask', 'posMask', 'negMask', 'xyt', 'xyt2', 'xytPos', 'xytPos2', 'xytNeg', 'xytNeg2', 'tracks', 'tracksPos', 'tracksNeg', 'flowAlignment', 'peakSize', 'maxDisp', 'relThresh', '-v7.3');
 end

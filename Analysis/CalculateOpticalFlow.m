@@ -43,11 +43,7 @@ if strcmp(OFmethod, 'LK-all')
     [vxMat, vyMat, relMat, cohMat, dxMat, dyMat, dtMat] = LKxOptFlow_allFrames(images, xySig, tSig, wSig);
 
     %  Save
-    try
-        save([exportFolder, 'OpticalFlow.mat'], 'xySig', 'tSig', 'wSig', 'vxMat', 'vyMat', 'relMat', 'cohMat', 'dxMat', 'dyMat', 'dtMat');
-    catch
-        save([exportFolder, 'OpticalFlow.mat'], 'xySig', 'tSig', 'wSig', 'vxMat', 'vyMat', 'relMat', 'cohMat', 'dxMat', 'dyMat', 'dtMat', '-v7.3');
-    end
+    save([exportFolder, 'OpticalFlow.mat'], 'xySig', 'tSig', 'wSig', 'vxMat', 'vyMat', 'relMat', 'cohMat', 'dxMat', 'dyMat', 'dtMat', '-v7.3');
 
 elseif strcmp(OFmethod, 'LK')
     %%  Lucas-Kanade Method

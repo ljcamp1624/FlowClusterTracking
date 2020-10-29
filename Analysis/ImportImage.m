@@ -43,9 +43,5 @@ end
 if ~exist(exportFolder, 'dir')
     mkdir(exportFolder);
 end
-try
-    save([exportFolder, 'OriginalImages.mat'], 'originalImages', 'numFrames');
-catch
-    save([exportFolder, 'OriginalImages.mat'], 'originalImages', 'numFrames', '-v7.3');
-end
+save([exportFolder, 'OriginalImages.mat'], 'originalImages', 'numFrames', '-v7.3');
 end

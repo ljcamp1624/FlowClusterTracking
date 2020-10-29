@@ -36,8 +36,4 @@ else
 end
 
 %%  Save
-try
-    save([exportFolder, 'SmoothImages.mat'], 'smoothImages', 'smoothSig');
-catch
-    save([exportFolder, 'SmoothImages.mat'], 'smoothImages', 'smoothSig', '-v7.3');
-end
+save([exportFolder, 'SmoothImages.mat'], 'smoothImages', 'smoothSig', '-v7.3');

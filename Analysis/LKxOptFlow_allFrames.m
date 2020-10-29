@@ -66,3 +66,4 @@ rel = real(min(e1, e2));
 coh = real(abs(e1 - e2)./(e1 + e2 + eps));
 vx = ((determinant + eps).^-1).*((wdy2.*-wdtx)+(-wdxy.*-wdty));
 vy = ((determinant + eps).^-1).*((-wdxy.*-wdtx)+(wdx2.*-wdty));
+end
