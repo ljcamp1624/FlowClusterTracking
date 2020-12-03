@@ -21,6 +21,10 @@
 %   This function is called by FitFlowDistributions.m
 %
 function fitParams = AnalyticalVonMisesFitOverTime(angList, timeList)
+if isempty(angList)
+    fitParams = [];
+    return;
+end
 timeArray = unique(timeList);
 fitParams = [];
 for t = 1:length(timeArray)

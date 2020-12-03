@@ -21,7 +21,7 @@
 %   This function is called by ClusterTrack.m
 %
 function [grad, jac] = CalculateDerivatives(im, sig)
-%% Create filters
+%%  Create filters
 sig1 = sig;
 sig2 = sig/2;
 
@@ -37,31 +37,43 @@ fx = exp(-ix.*ix/2/sig2/sig2)/sqrt(2*pi)/sig2;
 fy = exp(-iy.*iy/2/sig1/sig1)/sqrt(2*pi)/sig1;
 gy = iy.*fx.*fy/sig1/sig1/sig2/sig2;
 
-%   pixel-scale x-gradient filter
-gx2 = -fspecial('sobel');
-
-%   pixel-scale y-gradient filter
-gy2 = -fspecial('sobel')';
-
-%% Compute Derivates
-
+%%  Compute Derivates
 %   first derivatives on the scale of "sig"
 grad_x = imfilter(im, gx, 'replicate');
 grad_y = imfilter(im, gy, 'replicate');
-
-%   second derivatives on the scale of "sig"
-% grad_xx = imfilter(grad_x, gx, 'replicate');
-% grad_xy = imfilter(grad_x, gy, 'replicate');
-% grad_yx = imfilter(grad_y, gx, 'replicate');
-% grad_yy = imfilter(grad_y, gy, 'replicate');
-
-%   second derivatives on the pixel scale (LC thinks this is probably better)
-grad_xx = imfilter(grad_x, gx2, 'replicate');
-grad_xy = imfilter(grad_x, gy2, 'replicate');
-grad_yx = imfilter(grad_y, gx2, 'replicate');
-grad_yy = imfilter(grad_y, gy2, 'replicate');
+clear im
 
 %% Compute Gradient and Jacobian
 grad = sqrt(grad_x.^2 + grad_y.^2);
+
+%%  Compute second derivatives
+%   second derivatives on the scale of "sig"
+grad_xx = imfilter(grad_x, gx, 'replicate');
+grad_xy = imfilter(grad_x, gy, 'replicate');
+clear grad_x
+
+grad_yx = imfilter(grad_y, gx, 'replicate');
+grad_yy = imfilter(grad_y, gy, 'replicate');
+clear grad_y
+
+%% Compute Jacobian
 jac = grad_xx.*grad_yy - grad_xy.*grad_yx;
+
+%%  
+%   pixel-scale x-gradient filter
+% gx2 = -fspecial('sobel');
+
+%   pixel-scale y-gradient filter
+% gy2 = -fspecial('sobel')';
+
+%   second derivatives on the pixel scale (LC thinks this is probably better)
+% grad_xx = imfilter(grad_x, gx2, 'replicate');
+% grad_xy = imfilter(grad_x, gy2, 'replicate');
+% clear grad_x
+% 
+% grad_yx = imfilter(grad_y, gx2, 'replicate');
+% grad_yy = imfilter(grad_y, gy2, 'replicate');
+% clear grad_y
+
+
 end

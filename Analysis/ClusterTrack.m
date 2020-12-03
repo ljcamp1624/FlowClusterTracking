@@ -20,21 +20,20 @@
 %
 %   This function is called by TrackFlowClusters.m
 %
-function [xyt, xyt2, tracks] = ClusterTrack(peakIm, clusterIm, mask, peakSize, maxDisp)
+function [xyt, xyt2, tracks] = ClusterTrack(peakIm, clusterIm, mask, peakThresh, peakSize, maxDisp)
 %%  Build image with artificial peaks
 m = mean(peakIm(:));
 s = std(peakIm(:));
 z = (peakIm - m)/s;
 
-%% Calculate the initial xyt matrix using pkfnd
-peakImThresh = 3; % Hard coded. Pass as input if you want to modify in ControlScript.m
+%%  Calculate the initial xyt matrix using pkfnd
 xyt = [];
 for i = 1:size(clusterIm, 3)
-    pks = pkfnd(z(:, :, i), peakImThresh, peakSize);
+    pks = pkfnd(z(:, :, i), peakThresh, 2*peakSize);
     xyt = [xyt; [pks, i + zeros(size(pks))]];
 end
 
-%% Remove points outside of mask
+%%  Remove points outside of mask
 if isempty(xyt)
     xyt2 = [];
     tracks = [];
@@ -43,15 +42,17 @@ end
 idx = sub2ind(size(mask), xyt(:, 2), xyt(:, 1), xyt(:, 3));
 xyt(~mask(idx), :) = [];
 
-%% Recalculate the xyt points using cntrd
+%%  Recalculate the xyt points using cntrd
 xyt2 = [];
 for i = 1:size(clusterIm, 3)
-    pks2 = cntrd(clusterIm(:, :, i), xyt(xyt(:, 3) == i, :), floor(peakSize/2));
+    pks2 = cntrd(clusterIm(:, :, i), xyt(xyt(:, 3) == i, :), 2*peakSize + 1);
     if ~isempty(pks2)
         pks2 = pks2(:, [1, 2]);
     end
     xyt2 = [xyt2; [pks2, zeros(size(pks2, 1), 1) + i]];
 end
+
+%%  Track points
 if size(xyt2, 1) >= 2
     tracks = track(xyt2, maxDisp);
 else

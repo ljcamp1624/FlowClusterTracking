@@ -40,10 +40,10 @@ if strcmp(OFmethod, 'LK-all')
     %   size of "gt" in "LKxOptFlow_allFrames" is determined and break your
     %   image series into separate chunks. Contact Leonard Campanello at
     %   ljcamp (at) umd (dot) edu if you need assistance with a workaround.
-    [vxMat, vyMat, relMat, cohMat, dxMat, dyMat, dtMat] = LKxOptFlow_allFrames(images, xySig, tSig, wSig);
+    [vxMat, vyMat, relMat] = LKxOptFlow_allFrames(images, xySig, tSig, wSig);
 
     %  Save
-    save([exportFolder, 'OpticalFlow.mat'], 'xySig', 'tSig', 'wSig', 'vxMat', 'vyMat', 'relMat', 'cohMat', 'dxMat', 'dyMat', 'dtMat', '-v7.3');
+    save([exportFolder, 'OpticalFlow.mat'], 'xySig', 'tSig', 'wSig', 'vxMat', 'vyMat', 'relMat', '-v7.3');
 
 elseif strcmp(OFmethod, 'LK')
     %%  Lucas-Kanade Method

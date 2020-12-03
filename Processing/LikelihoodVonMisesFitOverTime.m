@@ -21,7 +21,12 @@
 %   This function is called by FitFlowDistributions.m
 %
 function newFitParams = LikelihoodVonMisesFitOverTime(angList, timeList, fitParams)
-%% Calculate new fit parameters
+%%  Early exit 
+if isempty(angList)
+    newFitParams = [];
+    return;
+end
+%%  Calculate new fit parameters
 timeArray = unique(timeList);
 newFitParams = [];
 for t = 1:length(timeArray)

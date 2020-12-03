@@ -22,6 +22,12 @@
 %   Likelihood VonMisesFitOverTime.m
 %
 function newFitParams = LikelihoodVonMisesFit(angList, fitParams)
+%%  Early exit
+if isempty(angList) || isempty(fitParams)
+    newFitParams = [];
+    return;
+end
+
 %%  choose initial parameters
 b = fitParams(:); % Should be in the form  b = [mu; k; p1; p2; p3];
 
@@ -40,7 +46,8 @@ newFitParams(5) = min(x1, x2) + log(.01);
 
 %%  fit data
 options = optimoptions('fmincon', 'GradObj', 'on', 'display', 'none');
-lowerBound = [-inf; 2; -inf; -inf; -inf];
+% lowerBound = [-inf; 2; -inf; -inf; -inf];
+lowerBound = [-inf; -inf; -inf; -inf; -inf];
 newFitParams = fmincon(@(b) VMMix_logF(angList, b), newFitParams, [], [], [], [], lowerBound, [], [], options);
 
 %%  process output

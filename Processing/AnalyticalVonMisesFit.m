@@ -22,6 +22,12 @@
 %   AnalyticalVonMisesFitOverTime.m
 %
 function fitParams = AnalyticalVonMisesFit(angList)
+%%  Early exit
+if isempty(angList)
+    fitParams = [];
+    return;
+end
+
 %%  Calculate Modified Bessel Functions of the First Kind
 xVec = 0:0.001:1000;
 I0 = besseli(0, xVec); 

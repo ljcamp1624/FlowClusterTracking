@@ -21,6 +21,9 @@
 %   This function is called by CreateMovies_withTracks.m
 %
 function tracks = ApplyMinTrackLength(tracks, minTrackLength)
+    if isempty(tracks)
+        return;
+    end
     IDs = unique(tracks(:, 4)); 
     badIDs = []; 
     for i = 1:length(IDs)

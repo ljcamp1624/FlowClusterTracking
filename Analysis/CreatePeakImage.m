@@ -20,8 +20,8 @@
 %
 %   This function is called by TrackFlowClusters.m
 %
-function peakIm = CreatePeakImage(clusterIm)
+function peakIm = CreatePeakImage(clusterIm, peakSig)
 clusterIm = RenormalizeImage(clusterIm);
-[grad, jac] = CalculateDerivatives(clusterIm, 1);
+[grad, jac] = CalculateDerivatives(clusterIm, peakSig);
 peakIm = clusterIm.*jac./(grad + eps);
 end

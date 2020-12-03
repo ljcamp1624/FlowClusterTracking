@@ -20,7 +20,7 @@
 %
 %   This function is called by FlowProcessingScript.m
 %
-function [angList, timeList, relList, peakList] = FlowDistributionsData(exportFolder, fileName, vxMat, vyMat, relMat, diffIm, peakIm, clusterIm)
+function [angList, timeList, relList, peakList] = FlowDistributionsData(exportFolder, fileName, vxMat, vyMat, relMat, diffIm, peakIm, clusterIm, currMask)
 %%  Calculate flow data
 angMat = atan2(vyMat, vxMat);
 magMat = sqrt(vxMat.*vxMat + vyMat.*vyMat);
@@ -28,14 +28,15 @@ magMat = sqrt(vxMat.*vxMat + vyMat.*vyMat);
 
 %%  Flow data where magnitude is > 0
 magMask = magMat > eps;
-angList = angMat(magMask(:)) - pi/2;
-magList = magMat(magMask(:));
-timeList = timeMat(magMask(:));
-relList = relMat(magMask(:));
-diffList = diffIm(magMask(:));
-peakList = peakIm(magMask(:));
-clusterList = clusterIm(magMask(:));
+finalMask = magMask & currMask;
+angList = angMat(finalMask(:)) - pi/2;
+magList = magMat(finalMask(:));
+timeList = timeMat(finalMask(:));
+relList = relMat(finalMask(:));
+diffList = diffIm(finalMask(:));
+peakList = peakIm(finalMask(:));
+clusterList = clusterIm(finalMask(:));
 
 %%  Save flow data
-save([exportFolder, fileName], 'angList', 'magList', 'timeList', 'relList', 'diffList', 'peakList', 'clusterList');
+save([exportFolder, fileName], 'angList', 'magList', 'timeList', 'relList', 'diffList', 'peakList', 'clusterList', '-v7.3');
 end

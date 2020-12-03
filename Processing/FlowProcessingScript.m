@@ -47,9 +47,14 @@ modelsFileNames = {...,
     'PosFlowModels.mat', ...
     'NegFlowModels.mat'};
 
+modelEvalsFileNames = {...,
+    'FlowModelEvals.mat', ...
+    'PosFlowModelEvals.mat', ...
+    'NegFlowModelEvals.mat'};
+
 %%  Process parameters
 relThresh = processingParams.relThresh;
-peakImThresh = 3; % Hard coded.
+peakThresh = processingParams.peakThresh;
 thetaBinSize = processingParams.thetaBinSizeFlow;
 
 %%  Load optical flow
@@ -67,7 +72,7 @@ else
 end
 
 %%  Run script
-for runIdx = 1:3
+for runIdx = 1:3 % 1 = ALL, 2 = POSITIVE, 3 = NEGATIVE
     %%  Messages
     if runIdx == 1
         fprintf('\n- All Optical Flow\n');
@@ -80,14 +85,17 @@ for runIdx = 1:3
     %%  Select data
     if allocateData == 1
         if runIdx == 1
-            currPeakIm = peakIm.*double(magMask & relMask);
-            currClusterIm = clusterIm.*double(magMask & relMask);
+            currMask = magMask & relMask;
+            currPeakIm = peakIm.*double(currMask);
+            currClusterIm = clusterIm.*double(currMask);
         elseif runIdx == 2
-            currPeakIm = peakIm.*double(magMask & relMask & posMask);
-            currClusterIm = clusterIm.*double(magMask & relMask & posMask);
+            currMask = magMask & relMask & posMask;
+            currPeakIm = peakIm.*double(currMask);
+            currClusterIm = clusterIm.*double(currMask);
         elseif runIdx == 3
-            currPeakIm = peakIm.*double(magMask & relMask & negMask);
-            currClusterIm = clusterIm.*double(magMask & relMask & negMask);
+            currMask = magMask & relMask & negMask;
+            currPeakIm = peakIm.*double(currMask);
+            currClusterIm = clusterIm.*double(currMask);
         end
     end
     
@@ -123,43 +131,78 @@ for runIdx = 1:3
         fitDataToModels = 1;
     end
     
+    %  Evaluating model fits
+    if exist([flowExportFolder, modelEvalsFileNames{runIdx}], 'file')
+        fprintf('  FlowModelEvals Located\n');
+        evaluateModels = 0;
+    else
+        evaluateModels = 0; % set to = 1; after building the evaluation function
+    end
+    
     %%  Plotting distributions and fits
     
     if createDistributionData == 1
         fprintf('  Creating Distributions Data\n');
-        [angList, timeList, relList, peakList] = FlowDistributionsData(flowExportFolder, dataFileNames{runIdx}(1:(end - 4)), vxMat, vyMat, relMat, smoothDiffImages, currPeakIm, currClusterIm);
+        [angList, timeList, relList, peakList] = FlowDistributionsData(flowExportFolder, dataFileNames{runIdx}(1:(end - 4)), vxMat, vyMat, relMat, smoothDiffImages, currPeakIm, currClusterIm, currMask);
+        loadDistributionData = 0;
+    else
+        loadDistributionData = 1;
     end
     
     if createFlowDistributions == 1
-        if ~exist('angList', 'var')
-            fprintf('  Loading FlowDistributionsData to Create Flow Distributions\n');
+        if loadDistributionData == 1
+            fprintf(['  Loading ', dataFileNames{runIdx}, ' to Create Flow Distributions\n']);
             load([flowExportFolder, dataFileNames{runIdx}], 'angList', 'timeList', 'relList', 'peakList');
+            loadDistributionData = 0;
         end
         fprintf('  Creating FlowDistributions with current parameters\n');
-        [allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts] = FlowDistributions(flowExportFolder, distributionsFileNames{runIdx}(1:(end - 4)), angList, timeList, relList, peakList, relThresh, peakImThresh, thetaBinSize);
+        [allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts] = FlowDistributions(flowExportFolder, distributionsFileNames{runIdx}(1:(end - 4)), angList, timeList, relList, peakList, relThresh, peakThresh, thetaBinSize);
+        loadDistributions = 0;
+    else
+        loadDistributions = 1;
     end
     
     if fitDataToModels == 1
-        if ~exist('angList', 'var')
-            fprintf('  Loading FlowDistributionsData to Create Flow Models\n');
+        if loadDistributionData == 1
+            fprintf(['  Loading ', dataFileNames{runIdx}, ' to Create Flow Models\n']);
             load([flowExportFolder, dataFileNames{runIdx}], 'angList', 'timeList', 'relList', 'peakList');
+            loadDistributionData = 0;
         end
         fprintf('  Creating FlowModels\n');
-        [basicModel, mixedModel] = FitFlowDistributions(flowExportFolder, modelsFileNames{runIdx}(1:(end - 4)), angList, timeList, relList, peakList, relThresh, peakImThresh);
+        [basicModel, mixedModel] = FitFlowDistributions(flowExportFolder, modelsFileNames{runIdx}(1:(end - 4)), angList, timeList, relList, peakList, relThresh, peakThresh);
+        loadModels = 0;
+    else
+        loadModels = 1;
     end
+    
+%     if evaluateModels == 1
+%         if loadDistributionData == 1
+%             fprintf(['  Loading ', dataFileNames{runIdx}, ' to Evaluate Flow Models\n']);
+%             load([flowExportFolder, dataFileNames{runIdx}], 'angList', 'timeList', 'relList', 'peakList');
+%             loadDistributionData = 0;
+%         end
+%         if loadModels == 1
+%             fprintf('  Loading FlowModels to Evaluate Flow Models\n');
+%             load([flowExportFolder, modelsFileNames{runIdx}], 'basicModel', 'mixedModel');
+%             loadModels = 0;
+%         end
+%         [modelEvals] = EvaluateFlowDistributionFits(flowExportFolder, modelEvalsFileNames{runIdx}(1:(end - 4)), angList, timeList, relList, peakList, relThresh, peakThresh, basicModel, mixedModel);
+%     end
     
     if plotResults == 1
         plotFolder = [flowExportFolder, filesep, 'Plots', filesep];
         if ~exist(plotFolder, 'dir')
             mkdir(plotFolder);
         end
-        if ~exist('allAngCounts', 'var')
-            fprintf('  Loading FlowDistributions to Create Plots\n');
+        if loadDistributions == 1
+            fprintf(['  Loading ', distributionsFileNames{runIdx}, ' to Create Plots\n']);
             load([flowExportFolder, distributionsFileNames{runIdx}], 'allAngCounts', 'relMaskAngCounts', 'peakMaskAngCounts', 'relAndPeakMaskAngCounts');
+            loadDistributions = 0;
         end
-        if ~exist('basicModel', 'var')
-            fprintf('  Loading FlowModels to Create Plots\n');
+        if loadModels == 1
+            fprintf(['  Loading ', modelsFileNames{runIdx}, ' to Create Plots\n']);
             load([flowExportFolder, modelsFileNames{runIdx}], 'basicModel', 'mixedModel');
+            loadModels = 0;
         end
         PlotFlowDistributions(plotFolder, distributionsFileNames{runIdx}(1:(end - 4)), allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts, thetaBinSize, basicModel, mixedModel);
         PlotFlowKymographs(plotFolder, distributionsFileNames{runIdx}(1:(end - 4)), allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts, thetaBinSize, basicModel, mixedModel);

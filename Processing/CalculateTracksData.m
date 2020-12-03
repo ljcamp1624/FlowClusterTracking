@@ -21,6 +21,13 @@
 %   This function is called by TrackDistributionsData.m
 %
 function [diffMatInst, diffMatAvg] = CalculateTracksData(tracks)
+%%  Early exit
+if isempty(tracks)
+    diffMatInst = [];
+    diffMatAvg = [];
+    return;
+end
+
 %%  Calculate track data
 diffMatInst = [];
 diffMatAvg = [];

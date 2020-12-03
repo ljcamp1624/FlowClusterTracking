@@ -25,6 +25,8 @@ function TrackFlowClusters(fileParams, clusterParams, vxMat, vyMat, relMat, smoo
 exportFolder = fileParams.exportFolder;
 relThresh = clusterParams.relThresh;
 clusterRad = clusterParams.clusterRad;
+peakSig = clusterParams.peakSig;
+peakThresh = clusterParams.peakThresh;
 peakSize = clusterParams.peakSize;
 maxDisp = clusterParams.maxDisp;
 
@@ -46,16 +48,16 @@ relMask = relMat > relThresh;
 magMask = magMat > eps;
 posMask = smoothDiffImage > 0;
 negMask = smoothDiffImage < 0;
-clusterIm    = relMat.*flowAlignment; 
-clusterImMask = relMask & magMask;
-clusterImPosMask = relMask & magMask & posMask;
-clusterImNegMask = relMask & magMask & negMask;
+clusterIm           = relMat.*flowAlignment; 
+clusterImMask       = relMask & magMask;
+clusterImPosMask    = relMask & magMask & posMask;
+clusterImNegMask    = relMask & magMask & negMask;
 
 %%  Find and track peaks in cluster image
-peakIm = CreatePeakImage(clusterIm);
-[xyt, xyt2, tracks] = ClusterTrack(peakIm, clusterIm, clusterImMask, peakSize, maxDisp);
-[xytPos, xytPos2, tracksPos] = ClusterTrack(peakIm, clusterIm, clusterImPosMask, peakSize, maxDisp);
-[xytNeg, xytNeg2, tracksNeg] = ClusterTrack(peakIm, clusterIm, clusterImNegMask, peakSize, maxDisp);
+peakIm = CreatePeakImage(clusterIm, peakSig);
+[xyt, xyt2, tracks] = ClusterTrack(peakIm, clusterIm, clusterImMask, peakThresh, peakSize, maxDisp);
+[xytPos, xytPos2, tracksPos] = ClusterTrack(peakIm, clusterIm, clusterImPosMask, peakThresh, peakSize, maxDisp);
+[xytNeg, xytNeg2, tracksNeg] = ClusterTrack(peakIm, clusterIm, clusterImNegMask, peakThresh, peakSize, maxDisp);
 
 %% Save results
 save([exportFolder, 'FlowClusterTracks.mat'], 'peakIm', 'clusterIm', 'relMask', 'magMask', 'posMask', 'negMask', 'xyt', 'xyt2', 'xytPos', 'xytPos2', 'xytNeg', 'xytNeg2', 'tracks', 'tracksPos', 'tracksNeg', 'flowAlignment', 'peakSize', 'maxDisp', 'relThresh', '-v7.3');

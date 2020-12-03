@@ -21,6 +21,10 @@
 %   This function is called by CreateMovies_withTracks.m
 %
 function smoothedTracks = SmoothTracks(tracks, numNearestNeighbors)
+if isempty(tracks)
+    smoothedTracks = [];
+    return;
+end
 idxArray = unique(tracks(:, 4)); 
 smoothedTracks = zeros(size(tracks));
 for i = 1:length(idxArray)

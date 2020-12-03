@@ -37,6 +37,11 @@ dataFileNames = {...,
     'PosTracksData.mat', ...
     'NegTracksData.mat'};
 
+listsFileNames = {...,
+    'TracksLists.mat', ...
+    'PosTracksLists.mat', ...
+    'NegTracksLists.mat'};
+
 distributionsFileNames = {...,
     'TracksDistributions.mat', ...
     'PosTracksDistributions.mat', ...
@@ -103,7 +108,7 @@ for runIdx = 1:3
     %  Calculate flow distributions
     if createTracksData == 1
         createTrackDistributions = 1;
-    elseif exist([trackExportFolder, distributionsFileNames{runIdx}], 'file')
+    elseif exist([trackExportFolder, listsFileNames{runIdx}], 'file')
         fprintf('  TracksDistributions Located\n');
         oldData = load([trackExportFolder, distributionsFileNames{runIdx}], 'thetaBinSize', 'velBinSize', 'velMax');
         oldThetaBinSize = oldData.thetaBinSize;
@@ -138,7 +143,7 @@ for runIdx = 1:3
             q2 = data2.smoothDiffMatAvg;
         end
         fprintf('  Creating TrackDistributions with current parameters\n');
-        TrackDistributions(trackExportFolder, distributionsFileNames{runIdx}(1:(end - 4)), o1, p1, q1, o2, p2, q2, velBinSize, velMax, fileParams, thetaBinSize);
+        TrackDistributions(trackExportFolder, listsFileNames{runIdx}(1:(end - 4)), distributionsFileNames{runIdx}(1:(end - 4)), o1, p1, q1, o2, p2, q2, velBinSize, velMax, fileParams, thetaBinSize);
     end
     
     if plotResults == 1
