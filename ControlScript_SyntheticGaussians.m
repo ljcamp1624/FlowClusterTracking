@@ -38,7 +38,7 @@ clc;
 % --------- Control Script Parameters --------- %
 
 run(1) = 1;     % MainAnalysisScript:       1 = run
-run(2) = 0;     % MoviesScript              1 = run
+run(2) = 1;     % MoviesScript              1 = run
 run(3) = 1;     % FlowProcessingScript      1 = run, 2 = run with plotting
 run(4) = 1;     % TrackProcessingScript     1 = run, 2 = run with plotting
 
@@ -47,8 +47,8 @@ run(4) = 1;     % TrackProcessingScript     1 = run, 2 = run with plotting
 
 %   File names and folders
 fileName = 'SyntheticGaussians.tif';
-importFolder = 'C:\Users\Lenny\Documents\GitHub\FlowClusterTracking\Synthetic Gaussians\';
-exportFolder = 'C:\Users\Lenny\Documents\GitHub\FlowClusterTracking\Synthetic Gaussians\Output\';
+importFolder = 'C:\Users\Lenny\Documents\MATLAB\Demo\Synthetic Gaussians\';
+exportFolder = 'C:\Users\Lenny\Documents\MATLAB\Demo\Synthetic Gaussians\Output\';
 
 %   Image Parameters
 pxUnit = 'Micron';
@@ -72,7 +72,8 @@ diffTimeSig = 5;
 %   Tracking
 clusterRad = 7;
 relThresh = 1;
-% peakImThresh = 3; % Hard coded. Can be changed in ClusterTrack.
+peakSig = 6;
+peakThresh = 3;
 peakSize = 7;
 maxDisp = 7;
 
@@ -106,7 +107,8 @@ analysisParams.smoothParams.spatialSig = smoothSpatialSig;
 analysisParams.smoothParams.timeSig = smoothTimeSig;
 analysisParams.clusterParams.timeSig = diffTimeSig;
 analysisParams.clusterParams.clusterRad = clusterRad;
-% analysisParams.clusterParams.peakImThresh = peakImThresh; % Hard coded.
+analysisParams.clusterParams.peakSig = peakSig;
+analysisParams.clusterParams.peakThresh = peakThresh;
 analysisParams.clusterParams.relThresh = relThresh;
 analysisParams.clusterParams.peakSize = peakSize;
 analysisParams.clusterParams.maxDisp = maxDisp;
@@ -116,7 +118,7 @@ analysisParams.proccesingParams.trackSmoothNumNNs = trackSmoothNumNNs;
 %   Set Processing Parameters
 processingParams.thetaBinSizeFlow = thetaBinSizeFlow;
 processingParams.relThresh = relThresh;
-% processingParams.clusterParams.peakImThresh = peakImThresh; % Hard coded.
+processingParams.peakThresh = peakThresh;
 processingParams.minTrackLength = minTrackLength;
 processingParams.trackSmoothNumNNs = trackSmoothNumNNs;
 processingParams.velBinSize = velBinSize;
