@@ -40,8 +40,8 @@ basicModel.relAndPeakMask.overTime = AnalyticalVonMisesFitOverTime(angList(mask)
 
 %%  Fit distribution to von-Mises-model-plus-constant model
 
-% mixedModel.noMask.allTimes = LikelihoodVonMisesFit(angList, basicModel.noMask.allTimes);
-% mixedModel.noMask.overTime = LikelihoodVonMisesFitOverTime(angList, timeList, basicModel.noMask.overTime);
+mixedModel.noMask.allTimes = LikelihoodVonMisesFit(angList, basicModel.noMask.allTimes);
+mixedModel.noMask.overTime = LikelihoodVonMisesFitOverTime(angList, timeList, basicModel.noMask.overTime);
 
 mask = relList > relThresh;
 mixedModel.relMask.allTimes = LikelihoodVonMisesFit(angList(mask), basicModel.relMask.allTimes);

@@ -5,6 +5,8 @@ xData = [xData(1:(end - 1)), xData(1:(end - 1)), xData(2:end)]';
 xData = [xData(:); xData(end)];
 
 %% Create yData
+timeArray = counts(:, 1);
+counts = counts(:, 2:end);
 weightArray = sum(counts, 2)/sum(counts(:))*size(counts, 1);
 counts = counts/sum(counts(:))*size(counts, 1);
 

@@ -6,6 +6,8 @@ xData = [xData(1:(end - 1)), xData(1:(end - 1)), xData(2:end)]';
 xData = [xData(:); xData(end)];
 
 %% Create yData
+timeArray = counts(:, 1);
+counts = counts(:, 2:end);
 weightArray = sum(counts, 2)/sum(counts(:))*size(counts, 1);
 counts = counts/sum(counts(:))*size(counts, 1);
 
@@ -13,13 +15,21 @@ counts = counts/sum(counts(:))*size(counts, 1);
 if ~isempty(varargin)
     nPoints = 1000;
     xData2 = linspace(0, 2*pi, nPoints);
-    timeArray = varargin{1}(:, 1);
-    modelArray = varargin{1}(:, 2:end);
+    if isempty(varargin{1})
+        timeArray = [];
+        modelArray = [];
+    else
+        timeArray = varargin{1}(:, 1);
+        modelArray = varargin{1}(:, 2:end);
+    end
 end
 
 %% Plot data
 figure;
 rmax = max(ceil((360/spacing)*max(counts, [], 2))/(360/spacing));
+if rmax == 0 || isnan(rmax)
+    rmax = 1;
+end
 v = VideoWriter([folderName, fileName], 'MPEG-4');
 v.FrameRate = 12;
 open(v);

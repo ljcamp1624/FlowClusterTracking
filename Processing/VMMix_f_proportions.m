@@ -1,5 +1,9 @@
 % f
 function f = VMMix_f_proportions(x, b)
+if isempty(b)
+    f = zeros(size(x));
+    return;
+end
 mu = b(1);
 k = b(2);
 p1 = b(3);

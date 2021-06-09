@@ -72,7 +72,7 @@ else
 end
 
 %%  Run script
-for runIdx = 1:3 % 1 = ALL, 2 = POSITIVE, 3 = NEGATIVE
+for runIdx = 1:2 % 1 = ALL, 2 = POSITIVE, 3 = NEGATIVE
     %%  Messages
     if runIdx == 1
         fprintf('\n- All Optical Flow\n');
@@ -204,8 +204,8 @@ for runIdx = 1:3 % 1 = ALL, 2 = POSITIVE, 3 = NEGATIVE
             load([flowExportFolder, modelsFileNames{runIdx}], 'basicModel', 'mixedModel');
             loadModels = 0;
         end
-        PlotFlowDistributions(plotFolder, distributionsFileNames{runIdx}(1:(end - 4)), allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts, thetaBinSize, basicModel, mixedModel);
-        PlotFlowKymographs(plotFolder, distributionsFileNames{runIdx}(1:(end - 4)), allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts, thetaBinSize, basicModel, mixedModel);
+%         PlotFlowDistributions(plotFolder, distributionsFileNames{runIdx}(1:(end - 4)), allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts, thetaBinSize, basicModel, mixedModel);
+%         PlotFlowKymographs(plotFolder, distributionsFileNames{runIdx}(1:(end - 4)), allAngCounts, relMaskAngCounts, peakMaskAngCounts, relAndPeakMaskAngCounts, thetaBinSize, basicModel, mixedModel);
     end
     
 end

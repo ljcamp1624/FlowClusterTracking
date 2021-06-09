@@ -39,16 +39,16 @@ clc;
 
 run(1) = 1;     % MainAnalysisScript:       1 = run
 run(2) = 1;     % MoviesScript              1 = run
-run(3) = 1;     % FlowProcessingScript      1 = run, 2 = run with plotting
-run(4) = 1;     % TrackProcessingScript     1 = run, 2 = run with plotting
+run(3) = 2;     % FlowProcessingScript      1 = run, 2 = run with plotting
+run(4) = 2;     % TrackProcessingScript     1 = run, 2 = run with plotting
 
 
 % --------- File Parameters --------- %
 
 %   File names and folders
 fileName = 'SyntheticGaussians.tif';
-importFolder = 'C:\Users\Lenny\Documents\MATLAB\Demo\Synthetic Gaussians\';
-exportFolder = 'C:\Users\Lenny\Documents\MATLAB\Demo\Synthetic Gaussians\Output\';
+importFolder = 'C:\Users\Lenny\Documents\Github\FlowClusterTracking\Synthetic Gaussians\';
+exportFolder = 'C:\Users\Lenny\Documents\Github\FlowClusterTracking\Synthetic Gaussians\Output\';
 
 %   Image Parameters
 pxUnit = 'Micron';

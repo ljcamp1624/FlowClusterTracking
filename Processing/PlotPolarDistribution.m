@@ -14,6 +14,9 @@ yData = [yData(:); 0];
 figure;
 polarplot(xData*pi/180, yData, 'linewidth', 2, 'Color', [2 2 2]/4);
 rmax = ceil((360/spacing)*max(yData(:)))/(360/spacing);
+if rmax == 0
+    rmax = 1;
+end
 rlim([0 rmax]);
 if ~isempty(varargin)
     nPoints = 1000;
