@@ -39,8 +39,8 @@ clc;
 
 run(1) = 1;     % MainAnalysisScript:       1 = run
 run(2) = 1;     % MoviesScript              1 = run
-run(3) = 1;     % FlowProcessingScript      1 = run, 2 = run with plotting
-run(4) = 1;     % TrackProcessingScript     1 = run, 2 = run with plotting
+run(3) = 2;     % FlowProcessingScript      1 = run, 2 = run with plotting
+run(4) = 2;     % TrackProcessingScript     1 = run, 2 = run with plotting
 
 
 % --------- File Parameters --------- %
@@ -72,7 +72,8 @@ diffTimeSig = ;
 %   Tracking
 clusterRad = ;
 relThresh = ;
-% peakImThresh = 3; % Hard coded. Can be changed in ClusterTrack.
+peakSig = ;
+peakThresh = ;
 peakSize = ;
 maxDisp = ;
 
@@ -104,7 +105,7 @@ analysisParams.smoothParams.spatialSig = smoothSpatialSig;
 analysisParams.smoothParams.timeSig = smoothTimeSig;
 analysisParams.clusterParams.timeSig = diffTimeSig;
 analysisParams.clusterParams.clusterRad = clusterRad;
-% analysisParams.clusterParams.peakImThresh = peakImThresh; % Hard coded.
+analysisParams.clusterParams.peakThresh = peakThresh;
 analysisParams.clusterParams.relThresh = relThresh;
 analysisParams.clusterParams.peakSize = peakSize;
 analysisParams.clusterParams.maxDisp = maxDisp;
